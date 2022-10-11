@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.hlmy.spicystrip.model.mapper.SysDeptMapper">
+
+    <resultMap id="BaseResultMap" type="xyz.hlmy.spicystrip.model.entity.SysDept">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="title" column="title" jdbcType="VARCHAR"/>
+            <result property="simpleName" column="simple_name" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="ident" column="ident" jdbcType="VARCHAR"/>
+            <result property="orderNo" column="order_no" jdbcType="INTEGER"/>
+            <result property="pid" column="pid" jdbcType="BIGINT"/>
+            <result property="bizPid" column="biz_pid" jdbcType="BIGINT"/>
+            <result property="owner" column="owner" jdbcType="BIGINT"/>
+            <result property="assistant" column="assistant" jdbcType="BIGINT"/>
+            <result property="phone" column="phone" jdbcType="VARCHAR"/>
+            <result property="officeLocation" column="office_location" jdbcType="VARCHAR"/>
+            <result property="address" column="address" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,title,simple_name,
+        description,ident,order_no,
+        pid,biz_pid,owner,
+        assistant,phone,office_location,
+        address,status,update_by,
+        update_time,create_time
+    </sql>
+</mapper>
