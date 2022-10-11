@@ -11,8 +11,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+import xyz.hlmy.spicystrip.common.R;
 
 import javax.annotation.PostConstruct;
+import java.io.InputStream;
+import java.util.zip.ZipInputStream;
 
 /**
  * Activiti工具类
@@ -71,13 +75,35 @@ public class ActivitiUtil {
      * @param fileImage   BPMN存放图片的路径
      * @param processName 流程名称
      */
-    public static void deployProcess(String filePath, String fileImage, String processName) {
-        Deployment deployment = activitiUtil.repositoryService.createDeployment()
-                .addClasspathResource(filePath)
-                .addClasspathResource(fileImage)
-                .name(processName)
-                .deploy();
-        System.out.println("流程部署成功！ " + "部署id:"
-                + deployment.getId() + "  " + "部署名称:" + deployment.getName());
+    public static R deployProcess(String filePath, String fileImage, String processName) {
+        try {
+            Deployment deployment = activitiUtil.repositoryService.createDeployment().addClasspathResource(filePath).addClasspathResource(fileImage).name(processName).deploy();
+            return R.OK;
+        } catch (Exception e) {
+            return R.error(400, "部署失败");
+        }
+    }
+
+    /**
+     * 部署流程方式之一(zip)
+     *
+     * @param file        文件
+     * @param processName 流程名称
+     * @return R
+     */
+    public static R deployProcess(MultipartFile file, String processName) {
+        try {
+            //拿到流
+            InputStream inputStream = file.getInputStream();
+            //拿到Zip流
+            ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+            Deployment deployment = activitiUtil.repositoryService.createDeployment()
+                    .addZipInputStream(zipInputStream)
+                    .name(processName)
+                    .deploy();
+            return R.OK;
+        } catch (Exception e) {
+            return R.error(400, "部署失败");
+        }
     }
 }
