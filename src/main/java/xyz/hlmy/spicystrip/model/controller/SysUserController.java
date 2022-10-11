@@ -1,7 +1,7 @@
 package xyz.hlmy.spicystrip.model.controller;
 
 
-
+import xyz.hlmy.spicystrip.common.R;
 import xyz.hlmy.spicystrip.model.service.SysUserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +22,5 @@ public class SysUserController {
      */
     @Resource
     private SysUserService sysUserService;
-
 }
 

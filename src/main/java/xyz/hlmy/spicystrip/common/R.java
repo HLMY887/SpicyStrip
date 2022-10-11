@@ -31,6 +31,10 @@ public class R<T> {
         return new R<>(200, "ok", data, null);
     }
 
+    public static <S> R<S> error(int statusCode, String message) {
+        return new R(statusCode, message);
+    }
+
     public static <S> R<S> err(int statusCode, String message) {
         return new R<>(statusCode, message, null, null);
     }

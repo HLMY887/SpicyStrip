@@ -11,7 +11,7 @@
  Target Server Version : 80030
  File Encoding         : 65001
 
- Date: 10/10/2022 17:13:24
+ Date: 11/10/2022 16:49:48
 */
 
 SET NAMES utf8mb4;
@@ -55,7 +55,7 @@ CREATE TABLE `ACT_GE_BYTEARRAY`  (
   PRIMARY KEY (`ID_`) USING BTREE,
   INDEX `ACT_FK_BYTEARR_DEPL`(`DEPLOYMENT_ID_` ASC) USING BTREE,
   CONSTRAINT `ACT_FK_BYTEARR_DEPL` FOREIGN KEY (`DEPLOYMENT_ID_`) REFERENCES `ACT_RE_DEPLOYMENT` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin COMMENT = '资源文件表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ACT_GE_BYTEARRAY
@@ -70,7 +70,7 @@ CREATE TABLE `ACT_GE_PROPERTY`  (
   `VALUE_` varchar(300) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT NULL,
   `REV_` int NULL DEFAULT NULL,
   PRIMARY KEY (`NAME_`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin COMMENT = '系统配置表，存整个流程引擎级别的数据，初始化数据库时，会默认插入三条记录' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ACT_GE_PROPERTY
@@ -105,7 +105,7 @@ CREATE TABLE `ACT_HI_ACTINST`  (
   INDEX `ACT_IDX_HI_ACT_INST_END`(`END_TIME_` ASC) USING BTREE,
   INDEX `ACT_IDX_HI_ACT_INST_PROCINST`(`PROC_INST_ID_` ASC, `ACT_ID_` ASC) USING BTREE,
   INDEX `ACT_IDX_HI_ACT_INST_EXEC`(`EXECUTION_ID_` ASC, `ACT_ID_` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin COMMENT = '历史节点表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ACT_HI_ACTINST
@@ -128,7 +128,7 @@ CREATE TABLE `ACT_HI_ATTACHMENT`  (
   `CONTENT_ID_` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT NULL,
   `TIME_` datetime(3) NULL DEFAULT NULL,
   PRIMARY KEY (`ID_`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin COMMENT = '历史附件表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ACT_HI_ATTACHMENT
@@ -149,7 +149,7 @@ CREATE TABLE `ACT_HI_COMMENT`  (
   `MESSAGE_` varchar(4000) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT NULL,
   `FULL_MSG_` longblob NULL,
   PRIMARY KEY (`ID_`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin COMMENT = '历史意见表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ACT_HI_COMMENT
@@ -181,7 +181,7 @@ CREATE TABLE `ACT_HI_DETAIL`  (
   INDEX `ACT_IDX_HI_DETAIL_TIME`(`TIME_` ASC) USING BTREE,
   INDEX `ACT_IDX_HI_DETAIL_NAME`(`NAME_` ASC) USING BTREE,
   INDEX `ACT_IDX_HI_DETAIL_TASK_ID`(`TASK_ID_` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin COMMENT = '历史详情表，提供历史变量的查询' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ACT_HI_DETAIL
@@ -202,7 +202,7 @@ CREATE TABLE `ACT_HI_IDENTITYLINK`  (
   INDEX `ACT_IDX_HI_IDENT_LNK_USER`(`USER_ID_` ASC) USING BTREE,
   INDEX `ACT_IDX_HI_IDENT_LNK_TASK`(`TASK_ID_` ASC) USING BTREE,
   INDEX `ACT_IDX_HI_IDENT_LNK_PROCINST`(`PROC_INST_ID_` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin COMMENT = '历史流程人员表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ACT_HI_IDENTITYLINK
@@ -231,7 +231,7 @@ CREATE TABLE `ACT_HI_PROCINST`  (
   UNIQUE INDEX `PROC_INST_ID_`(`PROC_INST_ID_` ASC) USING BTREE,
   INDEX `ACT_IDX_HI_PRO_INST_END`(`END_TIME_` ASC) USING BTREE,
   INDEX `ACT_IDX_HI_PRO_I_BUSKEY`(`BUSINESS_KEY_` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin COMMENT = '历史流程实例表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ACT_HI_PROCINST
@@ -264,7 +264,7 @@ CREATE TABLE `ACT_HI_TASKINST`  (
   `TENANT_ID_` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT '',
   PRIMARY KEY (`ID_`) USING BTREE,
   INDEX `ACT_IDX_HI_TASK_INST_PROCINST`(`PROC_INST_ID_` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin COMMENT = '历史任务实例表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ACT_HI_TASKINST
@@ -293,7 +293,7 @@ CREATE TABLE `ACT_HI_VARINST`  (
   INDEX `ACT_IDX_HI_PROCVAR_PROC_INST`(`PROC_INST_ID_` ASC) USING BTREE,
   INDEX `ACT_IDX_HI_PROCVAR_NAME_TYPE`(`NAME_` ASC, `VAR_TYPE_` ASC) USING BTREE,
   INDEX `ACT_IDX_HI_PROCVAR_TASK_ID`(`TASK_ID_` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin COMMENT = '历史变量表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ACT_HI_VARINST
@@ -314,7 +314,7 @@ CREATE TABLE `ACT_PROCDEF_INFO`  (
   INDEX `ACT_FK_INFO_JSON_BA`(`INFO_JSON_ID_` ASC) USING BTREE,
   CONSTRAINT `ACT_FK_INFO_JSON_BA` FOREIGN KEY (`INFO_JSON_ID_`) REFERENCES `ACT_GE_BYTEARRAY` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `ACT_FK_INFO_PROCDEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `ACT_RE_PROCDEF` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin COMMENT = '流程定义信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ACT_PROCDEF_INFO
@@ -332,8 +332,10 @@ CREATE TABLE `ACT_RE_DEPLOYMENT`  (
   `TENANT_ID_` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT '',
   `DEPLOY_TIME_` timestamp(3) NULL DEFAULT NULL,
   `ENGINE_VERSION_` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT NULL,
+  `VERSION_` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT NULL,
+  `PROJECT_RELEASE_VERSION_` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT NULL,
   PRIMARY KEY (`ID_`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin COMMENT = '流程部署表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ACT_RE_DEPLOYMENT
@@ -364,7 +366,7 @@ CREATE TABLE `ACT_RE_MODEL`  (
   CONSTRAINT `ACT_FK_MODEL_DEPLOYMENT` FOREIGN KEY (`DEPLOYMENT_ID_`) REFERENCES `ACT_RE_DEPLOYMENT` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `ACT_FK_MODEL_SOURCE` FOREIGN KEY (`EDITOR_SOURCE_VALUE_ID_`) REFERENCES `ACT_GE_BYTEARRAY` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `ACT_FK_MODEL_SOURCE_EXTRA` FOREIGN KEY (`EDITOR_SOURCE_EXTRA_VALUE_ID_`) REFERENCES `ACT_GE_BYTEARRAY` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin COMMENT = '流程设计模型表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ACT_RE_MODEL
@@ -392,7 +394,7 @@ CREATE TABLE `ACT_RE_PROCDEF`  (
   `ENGINE_VERSION_` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT NULL,
   PRIMARY KEY (`ID_`) USING BTREE,
   UNIQUE INDEX `ACT_UNIQ_PROCDEF`(`KEY_` ASC, `VERSION_` ASC, `TENANT_ID_` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin COMMENT = '流程定义表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ACT_RE_PROCDEF
@@ -426,7 +428,7 @@ CREATE TABLE `ACT_RU_DEADLETTER_JOB`  (
   CONSTRAINT `ACT_FK_DEADLETTER_JOB_EXECUTION` FOREIGN KEY (`EXECUTION_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `ACT_FK_DEADLETTER_JOB_PROC_DEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `ACT_RE_PROCDEF` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `ACT_FK_DEADLETTER_JOB_PROCESS_INSTANCE` FOREIGN KEY (`PROCESS_INSTANCE_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin COMMENT = '运行时到期任务表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ACT_RU_DEADLETTER_JOB
@@ -504,7 +506,7 @@ CREATE TABLE `ACT_RU_EXECUTION`  (
   CONSTRAINT `ACT_FK_EXE_PROCDEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `ACT_RE_PROCDEF` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `ACT_FK_EXE_PROCINST` FOREIGN KEY (`PROC_INST_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `ACT_FK_EXE_SUPER` FOREIGN KEY (`SUPER_EXEC_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin COMMENT = '运行时流程实例表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ACT_RU_EXECUTION
@@ -532,7 +534,7 @@ CREATE TABLE `ACT_RU_IDENTITYLINK`  (
   CONSTRAINT `ACT_FK_ATHRZ_PROCEDEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `ACT_RE_PROCDEF` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `ACT_FK_IDL_PROCINST` FOREIGN KEY (`PROC_INST_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `ACT_FK_TSKASS_TASK` FOREIGN KEY (`TASK_ID_`) REFERENCES `ACT_RU_TASK` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin COMMENT = '运行时流程人员表，主要存储任务节点与参与者的相关信息' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ACT_RU_IDENTITYLINK
@@ -667,7 +669,7 @@ CREATE TABLE `ACT_RU_TASK`  (
   CONSTRAINT `ACT_FK_TASK_EXE` FOREIGN KEY (`EXECUTION_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `ACT_FK_TASK_PROCDEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `ACT_RE_PROCDEF` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `ACT_FK_TASK_PROCINST` FOREIGN KEY (`PROC_INST_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin COMMENT = '运行时任务节点表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ACT_RU_TASK
@@ -735,7 +737,7 @@ CREATE TABLE `ACT_RU_VARIABLE`  (
   CONSTRAINT `ACT_FK_VAR_BYTEARRAY` FOREIGN KEY (`BYTEARRAY_ID_`) REFERENCES `ACT_GE_BYTEARRAY` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `ACT_FK_VAR_EXE` FOREIGN KEY (`EXECUTION_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `ACT_FK_VAR_PROCINST` FOREIGN KEY (`PROC_INST_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin COMMENT = '运行时流程变量数据表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ACT_RU_VARIABLE
@@ -771,6 +773,7 @@ CREATE TABLE `sys_dept`  (
 -- ----------------------------
 -- Records of sys_dept
 -- ----------------------------
+INSERT INTO `sys_dept` VALUES (1, '辣条', '辣条', '', 'admin', 1, 0, 0, 0, 0, NULL, NULL, NULL, 0, 'admin', '2022-05-17 19:58:51', '2022-02-20 00:33:19');
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -820,6 +823,11 @@ CREATE TABLE `sys_permission`  (
 -- ----------------------------
 -- Records of sys_permission
 -- ----------------------------
+INSERT INTO `sys_permission` VALUES (1, 'system:user:query', 3, 'admin', '2022-04-05 16:38:36');
+INSERT INTO `sys_permission` VALUES (2, 'system:user:update', 3, 'admin', '2022-04-06 08:15:07');
+INSERT INTO `sys_permission` VALUES (3, 'system:user:delete', 3, 'admin', '2022-04-06 08:15:14');
+INSERT INTO `sys_permission` VALUES (4, 'system:user:create', 3, 'admin', '2022-04-06 08:15:18');
+INSERT INTO `sys_permission` VALUES (5, 'system:user:export', 3, 'admin', '2022-04-05 16:31:31');
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -839,6 +847,7 @@ CREATE TABLE `sys_role`  (
 -- ----------------------------
 -- Records of sys_role
 -- ----------------------------
+INSERT INTO `sys_role` VALUES (1, '系统管理员', 1, 0, 'admin', '2022-10-11 02:15:35', '2022-10-11 02:15:35');
 
 -- ----------------------------
 -- Table structure for sys_role_menu
@@ -856,6 +865,11 @@ CREATE TABLE `sys_role_menu`  (
 -- ----------------------------
 -- Records of sys_role_menu
 -- ----------------------------
+INSERT INTO `sys_role_menu` VALUES (1, 1, 1, 'admin');
+INSERT INTO `sys_role_menu` VALUES (413, 1, 2, 'admin');
+INSERT INTO `sys_role_menu` VALUES (414, 1, 3, 'admin');
+INSERT INTO `sys_role_menu` VALUES (415, 1, 4, 'admin');
+INSERT INTO `sys_role_menu` VALUES (416, 1, 5, 'admin');
 
 -- ----------------------------
 -- Table structure for sys_role_permission
@@ -874,6 +888,11 @@ CREATE TABLE `sys_role_permission`  (
 -- ----------------------------
 -- Records of sys_role_permission
 -- ----------------------------
+INSERT INTO `sys_role_permission` VALUES (32, 1, 1, 'admin', '2022-10-11 02:48:56');
+INSERT INTO `sys_role_permission` VALUES (33, 1, 2, 'admin', '2022-10-11 02:49:01');
+INSERT INTO `sys_role_permission` VALUES (34, 1, 3, 'admin', '2022-10-11 02:49:08');
+INSERT INTO `sys_role_permission` VALUES (35, 1, 4, 'admin', '2022-10-11 02:49:15');
+INSERT INTO `sys_role_permission` VALUES (36, 1, 5, 'admin', '2022-10-11 02:49:19');
 
 -- ----------------------------
 -- Table structure for sys_user
@@ -883,7 +902,7 @@ CREATE TABLE `sys_user`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `username` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `nickname` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
-  `password` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `phone` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `avatar` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `register_ip` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
@@ -901,6 +920,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
+INSERT INTO `sys_user` VALUES (10001, '超级管理员', 'admin', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', '123456', 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y', '192.168.125.70', 0, NULL, '123456', '2022-10-11 02:10:26', '2022-10-11 10:10:14');
 
 -- ----------------------------
 -- Table structure for sys_user_dept
@@ -921,6 +941,7 @@ CREATE TABLE `sys_user_dept`  (
 -- ----------------------------
 -- Records of sys_user_dept
 -- ----------------------------
+INSERT INTO `sys_user_dept` VALUES (32, 10001, 1, 1, 'admin', '2022-10-11 02:54:39', '2022-10-11 02:54:39');
 
 -- ----------------------------
 -- Table structure for sys_user_role
@@ -939,5 +960,6 @@ CREATE TABLE `sys_user_role`  (
 -- ----------------------------
 -- Records of sys_user_role
 -- ----------------------------
+INSERT INTO `sys_user_role` VALUES (1, 10001, 1, 'admin', '2022-10-11 02:16:47', '2022-10-11 02:16:47');
 
 SET FOREIGN_KEY_CHECKS = 1;

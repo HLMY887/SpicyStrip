@@ -8,6 +8,7 @@ class SpicyStripApplicationTests {
 
     @Test
     void contextLoads() {
+
     }
 
 }
