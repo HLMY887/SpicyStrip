@@ -1,12 +1,15 @@
 package xyz.hlmy.spicystrip.util;
 
 import org.activiti.api.process.runtime.ProcessRuntime;
+import org.activiti.api.runtime.shared.query.Page;
+import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,10 @@ import xyz.hlmy.spicystrip.common.R;
 
 import javax.annotation.PostConstruct;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipInputStream;
 
 /**
@@ -97,13 +104,32 @@ public class ActivitiUtil {
             InputStream inputStream = file.getInputStream();
             //拿到Zip流
             ZipInputStream zipInputStream = new ZipInputStream(inputStream);
-            Deployment deployment = activitiUtil.repositoryService.createDeployment()
-                    .addZipInputStream(zipInputStream)
-                    .name(processName)
-                    .deploy();
+            Deployment deployment = activitiUtil.repositoryService.createDeployment().addZipInputStream(zipInputStream).name(processName).deploy();
             return R.OK;
         } catch (Exception e) {
             return R.error(400, "部署失败");
         }
     }
+
+//    /**
+//     * 获取部署过的全部流程
+//     *
+//     * @param startNum index
+//     * @param endNum   size
+//     * @return Page
+//     */
+//    public static R getProcessList(Integer startNum, Integer endNum) {
+//        List<ProcessDefinition> list = activitiUtil.repositoryService.createProcessDefinitionQuery().listPage(startNum, endNum);
+//        List<Map<String, Object>> pdResult = new ArrayList<>();
+//        for (org.activiti.engine.repository.ProcessDefinition pd : list) {
+//            Map<String, Object> pdMap = new HashMap<>();
+//            pdMap.put("id", pd.getId());
+//            pdMap.put("key", pd.getKey());
+//            pdMap.put("name", pd.getName());
+//            pdMap.put("version", pd.getVersion());
+//            pdMap.put("deploymentId", pd.getDeploymentId());
+//            pdResult.add(pdMap);
+//        }
+//        return R.ok(list);
+//    }
 }

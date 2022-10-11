@@ -3,6 +3,7 @@ package xyz.hlmy.spicystrip.controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import xyz.hlmy.spicystrip.actviti.dto.DeployProcessDto;
+import xyz.hlmy.spicystrip.actviti.dto.PageInfoDto;
 import xyz.hlmy.spicystrip.common.R;
 import xyz.hlmy.spicystrip.util.ActivitiUtil;
 
@@ -19,4 +20,10 @@ public class ActivitiController {
     public R deployProcessZip(@RequestParam("file") MultipartFile file, @RequestParam("processName") String processName) {
         return ActivitiUtil.deployProcess(file, processName);
     }
+
+    //报错了
+//    @GetMapping("/find")
+//    public R getProcessList(@RequestBody PageInfoDto dto) {
+//        return ActivitiUtil.getProcessList(dto.getIndex(), dto.getPageSize());
+//    }
 }
