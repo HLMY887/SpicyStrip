@@ -15,15 +15,20 @@ public class R {
     private R(int code, String msg, Object data) {
         this.code = code;
         this.msg = msg;
-        if (data instanceof Page<?>) {
-            Page<?> page = (Page<?>) data;
-            this.total = page.getTotal();
-            this.data = page.getRecords();
-        } else {
-            this.data = data;
-        }
+        this.data = data;
     }
 
+    private R(int code, String msg, Object data, Long total) {
+        this.code = code;
+        this.msg = msg;
+        this.data = data;
+        this.total = total;
+    }
+
+
+    public static R page(Object data, long total) {
+        return new R(Constant.OK_CODE, Constant.OK_MSG, data, total);
+    }
 
     public static R ok() {
         return new R(Constant.OK_CODE, Constant.OK_MSG, null);

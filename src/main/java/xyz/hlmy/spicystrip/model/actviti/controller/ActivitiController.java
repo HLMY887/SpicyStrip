@@ -2,6 +2,7 @@ package xyz.hlmy.spicystrip.model.actviti.controller;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import xyz.hlmy.spicystrip.model.actviti.dto.DelProcessModelDto;
 import xyz.hlmy.spicystrip.model.actviti.dto.DeployProcessDto;
 import xyz.hlmy.spicystrip.common.R;
 import xyz.hlmy.spicystrip.model.actviti.dto.ModelDto;
@@ -10,7 +11,6 @@ import xyz.hlmy.spicystrip.model.actviti.service.WorkFlowService;
 import xyz.hlmy.spicystrip.util.ActivitiUtil;
 
 import javax.annotation.Resource;
-
 
 @RestController
 @RequestMapping("/act")
@@ -65,4 +65,25 @@ public class ActivitiController {
     }
 
 
+    /**
+     * 批量删除
+     *
+     * @return
+     */
+    @PostMapping("/del")
+    public R batchDeleteProcessModels(@RequestBody DelProcessModelDto dto) {
+        return workFlowService.batchDeleteProcessModels(dto);
+    }
+
+
+    /**
+     * 我的流程
+     *
+     * @param dto
+     * @return
+     */
+    @GetMapping("/my/list")
+    public R getMyProcessList(ProcessQueryDTo dto) {
+        return workFlowService.getMyProcessList(dto);
+    }
 }

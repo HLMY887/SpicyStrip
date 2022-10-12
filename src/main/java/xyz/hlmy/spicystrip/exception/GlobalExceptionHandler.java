@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
         if (nle.getType().equals(NotLoginException.NOT_TOKEN)) {
             message = "请先登录";
         } else if (nle.getType().equals(NotLoginException.INVALID_TOKEN)) {
-            message = "token无效";
+            message = "登录时间已过期,请重新登录";
         } else if (nle.getType().equals(NotLoginException.TOKEN_TIMEOUT)) {
             message = "登录时间已过期,请重新登录";
         } else if (nle.getType().equals(NotLoginException.BE_REPLACED)) {

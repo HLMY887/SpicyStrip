@@ -10,6 +10,6 @@ public class Constant {
 
     public final static int OTHER_FAIL_CODE = 333;    // 其它错误
 
-    public final static String OK_MSG = "请求成功";
+    public final static String OK_MSG = "ok";
 
 }

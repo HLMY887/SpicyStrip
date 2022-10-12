@@ -7,6 +7,7 @@ import xyz.hlmy.spicystrip.model.sys.entity.SysUser;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author lipenghui
@@ -30,4 +31,7 @@ public interface SysUserService extends IService<SysUser> {
      */
 
     R SysUserLogin(SysUserLoginDto dto);
+
+    R addUser(SysUser user, List<Long> roleIds);
+
 }
