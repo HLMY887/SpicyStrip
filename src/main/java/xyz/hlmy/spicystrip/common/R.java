@@ -1,86 +1,69 @@
 package xyz.hlmy.spicystrip.common;
 
-public class R<T> {
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
-    private int code;
+public class R {
 
-    private String message;
+    private Integer code;
+    private String msg;
+    private Object data;
+    private Long total;
 
-    private T data;
+    public R() {
+    }
 
-    private ErrorInfo errorInfo;
-
-    public R(int code, String message) {
+    private R(int code, String msg, Object data) {
         this.code = code;
-        this.message = message;
+        this.msg = msg;
+        if (data instanceof Page<?>) {
+            Page<?> page = (Page<?>) data;
+            this.total = page.getTotal();
+            this.data = page.getRecords();
+        } else {
+            this.data = data;
+        }
     }
 
-    public R(int code, String message, T data) {
-        this(code, message);
-        this.data = data;
+
+    public static R ok() {
+        return new R(Constant.OK_CODE, Constant.OK_MSG, null);
     }
 
-    public R(int code, String message, T data, ErrorInfo errorInfo) {
-        this(code, message, data);
-        this.errorInfo = errorInfo;
+    public static R ok(Object data) {
+        return new R(Constant.OK_CODE, Constant.OK_MSG, data);
     }
 
-    public static final R<Void> OK = new R<>(200, "ok", null, null);
-
-    public static <S> R<S> ok(S data) {
-        return new R<>(200, "ok", data, null);
+    public static R ok(String msg, Object data) {
+        return new R(Constant.OK_CODE, msg, data);
     }
 
-    public static <S> R<S> error(int statusCode, String message) {
-        return new R(statusCode, message);
+    public static R err(String msg) {
+        return new R(Constant.FAIL_CODE, msg, null);
     }
 
-    public static <S> R<S> err(int statusCode, String message) {
-        return new R<>(statusCode, message, null, null);
+    public static R err(int errorCode, String msg) {
+        return new R(errorCode, msg, null);
     }
-
-    public static <S> R<S> err(int statusCode, String message, ErrorInfo errorInfo) {
-        return new R<>(statusCode, message, null, errorInfo);
-    }
-
-    public static <S> R<S> err(int statusCode, String message, int errCode, String errMessage) {
-        return new R<>(statusCode, message, null, new ErrorInfo(errCode, errMessage));
-    }
-
-    public static <S> R<S> err(int statusCode, String message, int errCode, String errMessage, Object errData) {
-        return new R<>(statusCode, message, null, new ErrorInfo(errCode, errMessage));
-    }
-
 
     public int getCode() {
         return code;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public String getMsg() {
+        return msg;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public T getData() {
+    public Object getData() {
         return data;
     }
 
-    public void setData(T data) {
-        this.data = data;
+    public Long getTotal() {
+        return total;
     }
 
-    public ErrorInfo getErrorInfo() {
-        return errorInfo;
+    public R setTotal(Long total) {
+        this.total = total;
+        return this;
     }
 
-    public void setErrorInfo(ErrorInfo errorInfo) {
-        this.errorInfo = errorInfo;
-    }
 }

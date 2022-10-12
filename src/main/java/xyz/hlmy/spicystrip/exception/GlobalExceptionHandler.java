@@ -30,6 +30,6 @@ public class GlobalExceptionHandler {
         } else {
             message = "当前会话未登录";
         }
-        return R.error(400, message);
+        return R.err(400, message);
     }
 }

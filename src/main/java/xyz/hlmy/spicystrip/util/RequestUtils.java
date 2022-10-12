@@ -2,7 +2,7 @@ package xyz.hlmy.spicystrip.util;
 
 import cn.dev33.satoken.stp.StpUtil;
 
-import xyz.hlmy.spicystrip.model.entity.SysUser;
+import xyz.hlmy.spicystrip.model.sys.entity.SysUser;
 
 public class RequestUtils {
 

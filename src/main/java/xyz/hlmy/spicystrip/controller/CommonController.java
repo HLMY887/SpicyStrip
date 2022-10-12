@@ -4,9 +4,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.hlmy.spicystrip.common.R;
-import xyz.hlmy.spicystrip.model.dto.SysUserLoginDto;
-import xyz.hlmy.spicystrip.model.dto.SysUserRegisterDto;
-import xyz.hlmy.spicystrip.model.service.SysUserService;
+import xyz.hlmy.spicystrip.model.sys.dto.SysUserLoginDto;
+import xyz.hlmy.spicystrip.model.sys.dto.SysUserRegisterDto;
+import xyz.hlmy.spicystrip.model.sys.service.SysUserService;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;

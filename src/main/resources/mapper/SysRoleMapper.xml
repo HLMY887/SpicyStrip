@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="xyz.hlmy.spicystrip.model.mapper.SysRoleMapper">
+<mapper namespace="xyz.hlmy.spicystrip.model.sys.mapper.SysRoleMapper">
 
-    <resultMap id="BaseResultMap" type="xyz.hlmy.spicystrip.model.entity.SysRole">
+    <resultMap id="BaseResultMap" type="xyz.hlmy.spicystrip.model.sys.entity.SysRole">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="name" column="name" jdbcType="VARCHAR"/>
             <result property="orderNo" column="order_no" jdbcType="INTEGER"/>
