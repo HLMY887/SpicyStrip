@@ -1,16 +1,26 @@
 package xyz.hlmy.spicystrip.model.actviti.service.impl;
 
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+
+import org.activiti.api.runtime.shared.query.Page;
+import org.activiti.bpmn.converter.BpmnXMLConverter;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.editor.constants.ModelDataJsonConstants;
+import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import xyz.hlmy.spicystrip.common.R;
@@ -24,9 +34,17 @@ import xyz.hlmy.spicystrip.util.PageUtil;
 import xyz.hlmy.spicystrip.util.StrUtil;
 
 import javax.annotation.Resource;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 public class WorkFlowServiceImpl implements WorkFlowService {
@@ -132,15 +150,34 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 
     /**
      * 我的流程
-     * @param dto
-     * @return
+     *
+     * @param dto 参数
+     * @return R
      */
     @Override
     public R getMyProcessList(ProcessQueryDTo dto) {
-        return null;
+        QueryWrapper<Object> queryWrapper = new QueryWrapper<>();
+        if (!StrUtil.isEmpty(dto.getUsername())) {
+            // TODO  根据用户获取专属流程
+        }
+        // TODO 查询条件
+        if (!StrUtil.isEmpty(dto.getProcessName())) {
+            queryWrapper.like("rp.NAME_", dto.getProcessName());
+        }
+        queryWrapper.isNotNull("rm.DEPLOYMENT_ID_").orderBy(true, false, "rm.CREATE_TIME_", "rm.KEY_");
+        List<ProcessModelVO> processModelVOS = activityMapper.listProcessModels(queryWrapper);
+        if (processModelVOS.size() == 0) {
+            return R.err(400, "未检索到数据");
+        }
+        List<ProcessModelVO> pageData = PageUtil.getPageData(dto.getPageInfoDto(), processModelVOS);
+        return R.ok(pageData);
     }
 
-
+    /**
+     * 删除
+     *
+     * @param modelId
+     */
     @Transactional
     public void DeleteProcessModel(String modelId) {
         ModelQuery modelQuery = repositoryService.createModelQuery().modelId(modelId);
@@ -152,5 +189,87 @@ public class WorkFlowServiceImpl implements WorkFlowService {
         }
         // 删除流程模型表
         repositoryService.deleteModel(modelId);
+    }
+
+    /**
+     * 导入
+     *
+     * @param file 当前文件
+     */
+    @Override
+    public void importProcessModel(InputStream file) {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(file));
+            String json = reader.lines().collect(Collectors.joining(System.getProperty("line.separator")));
+            JSONObject jsonObject = com.alibaba.fastjson.JSONObject.parseObject(json);
+            JSONArray processes = (JSONArray) jsonObject.get("processes");
+            processes.forEach(process -> {
+                JSONObject obj = (JSONObject) process;
+                String modelId = obj.get("id").toString();
+                Model modelEntity = repositoryService.getModel(modelId);
+                if (modelEntity == null) {
+                    modelEntity = repositoryService.newModel();
+                }
+                // 新增或更新模型表
+                modelEntity.setName(obj.get("name").toString());
+                modelEntity.setKey(obj.get("key").toString());
+                modelEntity.setMetaInfo(obj.get("metaInfo").toString());
+                modelEntity.setVersion((Integer) obj.get("version"));   // todo version 保存无效？
+                repositoryService.saveModel(modelEntity);
+                // 新增或更新二进制数据
+                byte[] modelEditorSources = obj.get("editorSource").toString().getBytes(StandardCharsets.UTF_8);
+                byte[] modelEditorSourceExts = obj.get("editorSourceExt").toString().getBytes(StandardCharsets.UTF_8);
+                repositoryService.addModelEditorSource(modelEntity.getId(), modelEditorSources);
+                repositoryService.addModelEditorSourceExtra(modelEntity.getId(), modelEditorSourceExts);
+                log.info("成功导入或更新流程" + modelEntity.getName());
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * 驳回任务
+     *
+     * @param taskId task id
+     * @return
+     */
+    @Override
+    public R RejectTask(String taskId) {
+        return null;
+    }
+
+    @Override
+    public R getProcessesList() {
+        List<ProcessDefinition> list = repositoryService.createProcessDefinitionQuery().list();
+        ///未结算
+        return R.ok("");
+    }
+
+    @Override
+    public R deploy(String modelId) {
+        String modelName = "", processName = "";
+        try {
+            // 获取模型
+            Model modelData = repositoryService.getModel(modelId);
+            modelName = modelData.getName();
+            byte[] bytes = repositoryService.getModelEditorSource(modelData.getId());
+            if (bytes == null) {
+                throw new Exception("模型数据为空，请先设计流程并成功保存，再进行发布。");
+            }
+            JsonNode modelNode = new ObjectMapper().readTree(bytes);
+            BpmnModel model = new BpmnJsonConverter().convertToBpmnModel(modelNode);
+            if (model.getProcesses().size() == 0) {
+                throw new Exception("数据模型不符要求，请至少设计一条主线流程。");
+            }
+            byte[] bpmnBytes = new BpmnXMLConverter().convertToXML(model);
+            //发布流程
+            String processSourceName = modelName + ".bpmn20.xml";
+            Deployment deployment = repositoryService.createDeployment().name(modelName).addString(processSourceName, new String(bpmnBytes, StandardCharsets.UTF_8)).deploy();
+            return R.ok(deployment.getId());
+        } catch (Exception e) {
+            return R.err(400, "发布失败");
+        }
     }
 }

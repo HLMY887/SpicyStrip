@@ -84,8 +84,25 @@ public class ActivitiUtil {
      */
     public static R deployProcess(String filePath, String fileImage, String processName) {
         try {
-            Deployment deployment = activitiUtil.repositoryService.createDeployment().addClasspathResource(filePath).addClasspathResource(fileImage).name(processName).deploy();
-            return R.ok();
+            if (StrUtil.isEmpty(fileImage)) {
+                Deployment deployment = activitiUtil.repositoryService.createDeployment().addClasspathResource(filePath).name(processName).deploy();
+                log.info("流程ID-{}", deployment.getId());
+                log.info("流程Name -{}", deployment.getName());
+                log.info("流程KEY-{}", deployment.getKey());
+                log.info("租户 ID -{}", deployment.getTenantId());
+                log.info("类别 -{}", deployment.getCategory());
+                log.info("部署时间 -{}", deployment.getDeploymentTime());
+                return R.ok();
+            } else {
+                Deployment deployment = activitiUtil.repositoryService.createDeployment().addClasspathResource(filePath).addClasspathResource(fileImage).name(processName).deploy();
+                log.info("流程ID{}", deployment.getId());
+                log.info("流程Name{}", deployment.getName());
+                log.info("流程KEY{}", deployment.getKey());
+                log.info("租户 ID{}", deployment.getTenantId());
+                log.info("类别{}", deployment.getCategory());
+                log.info("部署时间{}", deployment.getDeploymentTime());
+                return R.ok();
+            }
         } catch (Exception e) {
             return R.err(400, "部署失败");
         }

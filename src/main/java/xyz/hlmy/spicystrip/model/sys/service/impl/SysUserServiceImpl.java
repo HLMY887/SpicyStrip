@@ -76,6 +76,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             return R.err(400, "帐号或密码不正确");
         }
     }
+
+    @Override
+    public R addUser(SysUser user, List<Long> roleIds) {
+        return null;
+    }
 }
 
 
