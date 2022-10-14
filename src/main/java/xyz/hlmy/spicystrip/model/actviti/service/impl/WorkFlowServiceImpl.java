@@ -9,24 +9,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
-import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.TaskService;
-import org.activiti.engine.repository.Deployment;
-import org.activiti.engine.repository.Model;
-import org.activiti.engine.repository.ModelQuery;
-import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.*;
+import org.activiti.engine.repository.*;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import xyz.hlmy.spicystrip.common.R;
 import xyz.hlmy.spicystrip.model.actviti.dto.DelProcessModelDto;
 import xyz.hlmy.spicystrip.model.actviti.dto.ModelDto;
 import xyz.hlmy.spicystrip.model.actviti.dto.ProcessQueryDTo;
+import xyz.hlmy.spicystrip.model.actviti.dto.SaveProcessDto;
 import xyz.hlmy.spicystrip.model.actviti.mapper.ActivityMapper;
 import xyz.hlmy.spicystrip.model.actviti.service.WorkFlowService;
 import xyz.hlmy.spicystrip.model.actviti.vo.ProcessModelVO;
@@ -39,7 +35,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,22 +93,24 @@ public class WorkFlowServiceImpl implements WorkFlowService {
     @Override
     public R saveProcessModel(ModelDto dto) {
         try {
-            ObjectNode editorNode = objectMapper.createObjectNode();
-            editorNode.put("id", "canvas");
-            editorNode.put("resourceId", "canvas");
-            ObjectNode stencilSetNode = objectMapper.createObjectNode();
-            stencilSetNode.put("namespace", "http://b3mn.org/stencilset/bpmn2.0#");
-            editorNode.put("stencilset", stencilSetNode);
             Model model = repositoryService.newModel();
-            ObjectNode modelObjectNode = objectMapper.createObjectNode();
-            modelObjectNode.put(ModelDataJsonConstants.MODEL_NAME, dto.getModelName());
-            modelObjectNode.put(ModelDataJsonConstants.MODEL_REVISION, 1);
-            modelObjectNode.put(ModelDataJsonConstants.MODEL_DESCRIPTION, dto.getDescription());
-            model.setMetaInfo(modelObjectNode.toString());
+            //模型设置
+            ObjectNode modelNode = objectMapper.createObjectNode();
+            modelNode.put(ModelDataJsonConstants.MODEL_NAME, dto.getModelName());
+            modelNode.put(ModelDataJsonConstants.MODEL_DESCRIPTION, dto.getDescription());
+            modelNode.put(ModelDataJsonConstants.MODEL_REVISION, 1);
             model.setName(dto.getModelName());
-            model.setKey(dto.getModelKey());
-            // 保存模型
-            repositoryService.saveModel(model);
+            model.setKey(dto.getProcessId());
+            model.setCategory(dto.getCategory());
+            model.setMetaInfo(modelNode.toString());
+            //完善模型设置
+            ObjectNode editorNode = objectMapper.createObjectNode();
+            ObjectNode stencilSetNode = objectMapper.createObjectNode();
+            ObjectNode properties = objectMapper.createObjectNode();
+            stencilSetNode.put("namespace", "http://b3mn.org/stencilset/bpmn2.0#");
+            editorNode.replace("stencilset", stencilSetNode);
+            properties.put("process_id", dto.getProcessId());
+            editorNode.replace("properties", properties);
             repositoryService.addModelEditorSource(model.getId(), editorNode.toString().getBytes(StandardCharsets.UTF_8));
             return R.ok(model.getId());
         } catch (Exception e) {
@@ -242,9 +239,18 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 
     @Override
     public R getProcessesList() {
-        List<ProcessDefinition> list = repositoryService.createProcessDefinitionQuery().list();
-        ///未结算
-        return R.ok("");
+        ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
+        List<ProcessDefinition> listPage = processDefinitionQuery.listPage(0, 10);
+        Map<Object, Object> processList = new HashMap<>();
+        for (ProcessDefinition processDefinition : listPage) {
+            processList.put("id", processDefinition.getId());
+            processList.put("category", processDefinition.getCategory());
+            processList.put("name", processDefinition.getName());
+            processList.put("key", processDefinition.getKey());
+            processList.put("description", processDefinition.getDescription());
+            processList.put("version", processDefinition.getVersion());
+        }
+        return R.page(processList, processDefinitionQuery.count());
     }
 
     @Override
@@ -272,4 +278,33 @@ public class WorkFlowServiceImpl implements WorkFlowService {
             return R.err(400, "发布失败");
         }
     }
+
+    @Override
+    public R deployTest(InputStream file, String name) {
+        Deployment deployment = repositoryService.createDeployment().addInputStream(name, file).deploy();
+        return R.ok(deployment.toString());
+    }
+
+    /**
+     * @param deployKey
+     * @return
+     */
+    @Override
+    public R start(String deployKey) {
+        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
+        RuntimeService runtimeService = engine.getRuntimeService();
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(deployKey);
+        return R.ok(processInstance.toString());
+    }
+
+
+    /**
+     * @param dto
+     * @return
+     */
+    @Override
+    public R saveProcess(SaveProcessDto dto) {
+        return null;
+    }
+
 }

@@ -1,11 +1,13 @@
 package xyz.hlmy.spicystrip.model.actviti.service;
 
 
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.RequestParam;
 import xyz.hlmy.spicystrip.common.R;
 import xyz.hlmy.spicystrip.model.actviti.dto.DelProcessModelDto;
 import xyz.hlmy.spicystrip.model.actviti.dto.ModelDto;
 import xyz.hlmy.spicystrip.model.actviti.dto.ProcessQueryDTo;
+import xyz.hlmy.spicystrip.model.actviti.dto.SaveProcessDto;
+
 
 import java.io.InputStream;
 
@@ -37,4 +39,10 @@ public interface WorkFlowService {
     R getProcessesList();
 
     R deploy(String modelId);
+
+    R deployTest(InputStream file, String name);
+
+    R start(@RequestParam("deployKey") String deployKey);
+
+    R saveProcess(SaveProcessDto dto);
 }
