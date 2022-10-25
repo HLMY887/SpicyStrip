@@ -5,82 +5,64 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+import lombok.Data;
 
 /**
+ * 角色表
  * @TableName sys_role
  */
 @TableName(value ="sys_role")
+@Data
 public class SysRole implements Serializable {
+    /**
+     * 主键
+     */
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
+    /**
+     * 角色名称
+     */
+    @TableField(value = "name")
     private String name;
 
-    private Integer orderNo;
+    /**
+     * 父级ID
+     */
+    @TableField(value = "parent_id")
+    private Long parent_id;
 
-    private Integer status;
+    /**
+     * 类型。0：分类；1：角色
+     */
+    @TableField(value = "type")
+    private Integer type;
 
-    private String updateBy;
+    /**
+     * 备注
+     */
+    @TableField(value = "remark")
+    private String remark;
 
-    private Date updateTime;
+    /**
+     * 创建人
+     */
+    @TableField(value = "create_by")
+    private Long create_by;
 
-    private Date createTime;
+    /**
+     * 修改时间
+     */
+    @TableField(value = "update_time")
+    private LocalDateTime update_time;
 
+    /**
+     * 创建时间
+     */
+    @TableField(value = "create_time")
+    private LocalDateTime create_time;
+
+    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getOrderNo() {
-        return orderNo;
-    }
-
-    public void setOrderNo(Integer orderNo) {
-        this.orderNo = orderNo;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getUpdateBy() {
-        return updateBy;
-    }
-
-    public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
 }

@@ -5,182 +5,76 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+import lombok.Data;
 
 /**
+ * 部门表
  * @TableName sys_dept
  */
 @TableName(value ="sys_dept")
+@Data
 public class SysDept implements Serializable {
+    /**
+     * 主键
+     */
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    private String title;
+    /**
+     * 上级部门ID。一级部门为0
+     */
+    @TableField(value = "parent_id")
+    private Long parent_id;
 
-    private String simpleName;
+    /**
+     * 部门名称
+     */
+    @TableField(value = "name")
+    private String name;
 
-    private String description;
+    /**
+     * 类型。0：公司；1：部门；2：科室/小组
+     */
+    @TableField(value = "type")
+    private Integer type;
 
-    private String ident;
+    /**
+     * 上级部门ID
+     */
+    @TableField(value = "dept_id")
+    private Long dept_id;
 
-    private Integer orderNo;
+    /**
+     * 排序值。越小越靠前
+     */
+    @TableField(value = "sort")
+    private Integer sort;
 
-    private Long pid;
-
-    private Long bizPid;
-
-    private Long owner;
-
-    private Long assistant;
-
-    private String phone;
-
-    private String officeLocation;
-
-    private String address;
-
+    /**
+     * 状态。0：正常；1：禁用
+     */
+    @TableField(value = "status")
     private Integer status;
 
-    private String updateBy;
+    /**
+     * 修改时间
+     */
+    @TableField(value = "update_time")
+    private LocalDateTime update_time;
 
-    private Date updateTime;
+    /**
+     * 创建人
+     */
+    @TableField(value = "create_by")
+    private Long create_by;
 
-    private Date createTime;
+    /**
+     * 创建时间
+     */
+    @TableField(value = "create_time")
+    private LocalDateTime create_time;
 
+    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getSimpleName() {
-        return simpleName;
-    }
-
-    public void setSimpleName(String simpleName) {
-        this.simpleName = simpleName;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getIdent() {
-        return ident;
-    }
-
-    public void setIdent(String ident) {
-        this.ident = ident;
-    }
-
-    public Integer getOrderNo() {
-        return orderNo;
-    }
-
-    public void setOrderNo(Integer orderNo) {
-        this.orderNo = orderNo;
-    }
-
-    public Long getPid() {
-        return pid;
-    }
-
-    public void setPid(Long pid) {
-        this.pid = pid;
-    }
-
-    public Long getBizPid() {
-        return bizPid;
-    }
-
-    public void setBizPid(Long bizPid) {
-        this.bizPid = bizPid;
-    }
-
-    public Long getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Long owner) {
-        this.owner = owner;
-    }
-
-    public Long getAssistant() {
-        return assistant;
-    }
-
-    public void setAssistant(Long assistant) {
-        this.assistant = assistant;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getOfficeLocation() {
-        return officeLocation;
-    }
-
-    public void setOfficeLocation(String officeLocation) {
-        this.officeLocation = officeLocation;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getUpdateBy() {
-        return updateBy;
-    }
-
-    public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
 }

@@ -1,7 +1,10 @@
 package xyz.hlmy.spicystrip.common;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+
+/**
+ * 统一响应值
+ */
 public class R {
 
     private Integer code;

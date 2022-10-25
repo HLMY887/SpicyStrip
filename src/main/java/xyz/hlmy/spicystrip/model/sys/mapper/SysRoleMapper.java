@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
 * @author lipenghui
-* @description 针对表【sys_role(角色)】的数据库操作Mapper
-* @createDate 2022-10-11 10:52:52
+* @description 针对表【sys_role(角色表)】的数据库操作Mapper
+* @createDate 2022-10-25 10:22:01
 * @Entity xyz.hlmy.spicystrip.model.entity.SysRole
 */
 public interface SysRoleMapper extends BaseMapper<SysRole> {

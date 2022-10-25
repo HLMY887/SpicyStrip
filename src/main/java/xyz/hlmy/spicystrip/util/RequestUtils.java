@@ -4,6 +4,9 @@ import cn.dev33.satoken.stp.StpUtil;
 
 import xyz.hlmy.spicystrip.model.sys.entity.SysUser;
 
+/**
+ * 获取用户工具类
+ */
 public class RequestUtils {
 
     private static final String SESSION_USER_KEY = "login-user";

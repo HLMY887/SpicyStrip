@@ -7,8 +7,8 @@ spring:
   datasource:
     username: root
     password: 123456
-    #url: jdbc:mysql://121.4.254.248:3306/spicy_strip?useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&nullCatalogMeansCurrent=true
-    url: jdbc:mysql://192.168.125.70:3306/SpicyStrip?useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&nullCatalogMeansCurrent=true
+    url: jdbc:mysql://121.4.254.248:3306/SpicyStrip?useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&nullCatalogMeansCurrent=true
+#    url: jdbc:mysql://192.168.125.70:3306/SpicyStrip?useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&nullCatalogMeansCurrent=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       # 连接池最大连接数，默认是 10
@@ -38,7 +38,7 @@ spring:
     # Redis服务器连接端口
     port: 6379
     # Redis服务器连接密码（默认为空）
-    password: f4145dd51641193f
+    #    password: f4145dd51641193f
     # 连接超时时间
     timeout: 10s
     lettuce:
@@ -59,7 +59,6 @@ spring:
     history-level: audit
     #activiti会对数据库中所有表进行更新操作。如果表不存在，则自动创建。
     database-schema-update: true
-    deployment-mode: never-fail
     #关闭自动部署 默认是true
     check-process-definitions: false
 sa-token:
@@ -85,3 +84,4 @@ mybatis-plus:
   type-aliases-package: xyz.hlmy.spicystrip.model.mapper
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
