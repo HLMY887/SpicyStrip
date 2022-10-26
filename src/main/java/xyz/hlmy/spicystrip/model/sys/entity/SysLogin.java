@@ -1,23 +1,27 @@
 package xyz.hlmy.spicystrip.model.sys.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
 import lombok.Data;
 
 /**
  * 用户登录日志
+ *
  * @TableName sys_login
  */
-@TableName(value ="sys_login")
+@TableName(value = "sys_login")
 @Data
 public class SysLogin implements Serializable {
     /**
      * 主键
      */
-    @TableId(value = "id")
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
@@ -50,8 +54,6 @@ public class SysLogin implements Serializable {
     @TableField(value = "u_time")
     private LocalDateTime uTime;
 
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
 
     public Integer getId() {
         return id;

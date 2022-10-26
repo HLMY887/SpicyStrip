@@ -5,12 +5,14 @@ import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import xyz.hlmy.spicystrip.common.R;
 import xyz.hlmy.spicystrip.common.Snowflake;
+import xyz.hlmy.spicystrip.model.sys.UserListVo;
 import xyz.hlmy.spicystrip.model.sys.entity.SysLogin;
 import xyz.hlmy.spicystrip.model.sys.service.SysLoginService;
 import xyz.hlmy.spicystrip.model.sys.dto.DoLoginDto;
@@ -25,6 +27,7 @@ import xyz.hlmy.spicystrip.model.sys.mapper.SysUserMapper;
 import org.springframework.stereotype.Service;
 import xyz.hlmy.spicystrip.util.IPUtil;
 import xyz.hlmy.spicystrip.util.OsTypeUtil;
+import xyz.hlmy.spicystrip.util.StrUtil;
 
 
 import javax.annotation.Resource;
@@ -50,6 +53,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Resource
     private SysLoginService sysLoginService;
+
+    @Resource
+    private SysUserMapper sysUserMapper;
 
     /**
      * 新增用户
@@ -119,9 +125,19 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @SaCheckRole("admin")
     @Override
     public R getUserLists(UserListsDto dto) {
-        Object o = StpUtil.getSession().get(SaSession.USER);
-        log.info(o.toString());
-        return null;
+        QueryWrapper<Object> queryWrapper = new QueryWrapper<>();
+        if (!StrUtil.isEmpty(dto.getUsername())) {
+            queryWrapper.eq("u.user_name", dto.getUsername());
+        }
+        if (!StrUtil.isEmpty(dto.getRealname())) {
+            queryWrapper.eq("u.real_name", dto.getRealname());
+        }
+        queryWrapper.eq("u.status", dto.getStatus());
+        List<UserListVo> userLists = this.sysUserMapper.getUserLists(queryWrapper);
+        if (!StrUtil.isSizeEmpty(userLists)) {
+            return R.page(userLists,userLists.size());
+        }
+        return R.err(400, "为查询到用户");
     }
 
 
