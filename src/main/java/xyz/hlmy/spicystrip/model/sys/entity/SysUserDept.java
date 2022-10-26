@@ -24,19 +24,19 @@ public class SysUserDept implements Serializable {
      * 用户ID
      */
     @TableField(value = "user_id")
-    private Long user_id;
+    private Long userId;
 
     /**
      * 部门ID
      */
     @TableField(value = "dept_id")
-    private Long dept_id;
+    private Long deptId;
 
     /**
      * 创建时间
      */
     @TableField(value = "create_time")
-    private LocalDateTime create_time;
+    private LocalDateTime createTime;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -50,30 +50,30 @@ public class SysUserDept implements Serializable {
         return this;
     }
 
-    public Long getUser_id() {
-        return user_id;
+    public Long getUserId() {
+        return userId;
     }
 
-    public SysUserDept setUser_id(Long user_id) {
-        this.user_id = user_id;
+    public SysUserDept setUserId(Long userId) {
+        this.userId = userId;
         return this;
     }
 
-    public Long getDept_id() {
-        return dept_id;
+    public Long getDeptId() {
+        return deptId;
     }
 
-    public SysUserDept setDept_id(Long dept_id) {
-        this.dept_id = dept_id;
+    public SysUserDept setDeptId(Long deptId) {
+        this.deptId = deptId;
         return this;
     }
 
-    public LocalDateTime getCreate_time() {
-        return create_time;
+    public LocalDateTime getCreateTime() {
+        return createTime;
     }
 
-    public SysUserDept setCreate_time(LocalDateTime create_time) {
-        this.create_time = create_time;
+    public SysUserDept setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
         return this;
     }
 }

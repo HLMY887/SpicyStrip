@@ -1,7 +1,10 @@
 package xyz.hlmy.spicystrip.model.sys.service;
 
+import xyz.hlmy.spicystrip.model.sys.entity.SysDept;
 import xyz.hlmy.spicystrip.model.sys.entity.SysUserDept;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * @author lipenghui
@@ -11,4 +14,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface SysUserDeptService extends IService<SysUserDept> {
 
     boolean saveOrUpdate(Long user_id, Long dept_id);
+
+    List<SysDept> getUserDept(Long userId);
 }

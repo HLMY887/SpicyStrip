@@ -27,7 +27,7 @@ public class SysUser implements Serializable {
      * 登录名
      */
     @TableField(value = "user_name")
-    private String user_name;
+    private String userName;
 
     /**
      * 密码
@@ -39,7 +39,7 @@ public class SysUser implements Serializable {
      * 姓名
      */
     @TableField(value = "real_name")
-    private String real_name;
+    private String realName;
 
     /**
      * 性别。0：未知；1：男；2：女
@@ -87,25 +87,25 @@ public class SysUser implements Serializable {
      * 删除标识。0：未删除；1：已删除
      */
     @TableField(value = "del_flag")
-    private Integer del_flag;
+    private Integer delFlag;
 
     /**
      * 创建人
      */
     @TableField(value = "create_by")
-    private Long create_by;
+    private Long createBy;
 
     /**
      * 更新时间
      */
     @TableField(value = "update_time")
-    private LocalDateTime update_time;
+    private LocalDateTime updateTime;
 
     /**
      * 创建时间
      */
     @TableField(value = "create_time")
-    private LocalDateTime create_time;
+    private LocalDateTime createTime;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -119,14 +119,7 @@ public class SysUser implements Serializable {
         return this;
     }
 
-    public String getUser_name() {
-        return user_name;
-    }
 
-    public SysUser setUser_name(String user_name) {
-        this.user_name = user_name;
-        return this;
-    }
 
     public String getPassword() {
         return password;
@@ -137,12 +130,21 @@ public class SysUser implements Serializable {
         return this;
     }
 
-    public String getReal_name() {
-        return real_name;
+    public String getUserName() {
+        return userName;
     }
 
-    public SysUser setReal_name(String real_name) {
-        this.real_name = real_name;
+    public SysUser setUserName(String userName) {
+        this.userName = userName;
+        return this;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public SysUser setRealName(String realName) {
+        this.realName = realName;
         return this;
     }
 
@@ -209,39 +211,39 @@ public class SysUser implements Serializable {
         return this;
     }
 
-    public Integer getDel_flag() {
-        return del_flag;
+    public Integer getDelFlag() {
+        return delFlag;
     }
 
-    public SysUser setDel_flag(Integer del_flag) {
-        this.del_flag = del_flag;
+    public SysUser setDelFlag(Integer delFlag) {
+        this.delFlag = delFlag;
         return this;
     }
 
-    public Long getCreate_by() {
-        return create_by;
+    public Long getCreateBy() {
+        return createBy;
     }
 
-    public SysUser setCreate_by(Long create_by) {
-        this.create_by = create_by;
+    public SysUser setCreateBy(Long createBy) {
+        this.createBy = createBy;
         return this;
     }
 
-    public LocalDateTime getUpdate_time() {
-        return update_time;
+    public LocalDateTime getUpdateTime() {
+        return updateTime;
     }
 
-    public SysUser setUpdate_time(LocalDateTime update_time) {
-        this.update_time = update_time;
+    public SysUser setUpdateTime(LocalDateTime updateTime) {
+        this.updateTime = updateTime;
         return this;
     }
 
-    public LocalDateTime getCreate_time() {
-        return create_time;
+    public LocalDateTime getCreateTime() {
+        return createTime;
     }
 
-    public SysUser setCreate_time(LocalDateTime create_time) {
-        this.create_time = create_time;
+    public SysUser setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
         return this;
     }
 }

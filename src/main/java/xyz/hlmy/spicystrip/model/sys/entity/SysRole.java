@@ -31,7 +31,7 @@ public class SysRole implements Serializable {
      * 父级ID
      */
     @TableField(value = "parent_id")
-    private Long parent_id;
+    private Long parentId;
 
     /**
      * 类型。0：分类；1：角色
@@ -49,20 +49,92 @@ public class SysRole implements Serializable {
      * 创建人
      */
     @TableField(value = "create_by")
-    private Long create_by;
+    private Long createBy;
 
     /**
      * 修改时间
      */
     @TableField(value = "update_time")
-    private LocalDateTime update_time;
+    private LocalDateTime updateTime;
 
     /**
      * 创建时间
      */
     @TableField(value = "create_time")
-    private LocalDateTime create_time;
+    private LocalDateTime createTime;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
+    public Long getId() {
+        return id;
+    }
+
+    public SysRole setId(Long id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public SysRole setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public SysRole setParentId(Long parentId) {
+        this.parentId = parentId;
+        return this;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public SysRole setType(Integer type) {
+        this.type = type;
+        return this;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public SysRole setRemark(String remark) {
+        this.remark = remark;
+        return this;
+    }
+
+    public Long getCreateBy() {
+        return createBy;
+    }
+
+    public SysRole setCreateBy(Long createBy) {
+        this.createBy = createBy;
+        return this;
+    }
+
+    public LocalDateTime getUpdateTime() {
+        return updateTime;
+    }
+
+    public SysRole setUpdateTime(LocalDateTime updateTime) {
+        this.updateTime = updateTime;
+        return this;
+    }
+
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public SysRole setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+        return this;
+    }
 }

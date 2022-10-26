@@ -13,5 +13,9 @@ import java.util.List;
 public interface SysUserRoleService extends IService<SysUserRole> {
 
 
-   boolean saveOrUpdateBatchUserRole(List<Long> roleIds, Long userId);
+    boolean saveOrUpdateBatchUserRole(List<Long> roleIds, Long userId);
+
+    List<Object> getUserRole(Long UserId);
+
+
 }

@@ -7,10 +7,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.hlmy.spicystrip.common.R;
 import xyz.hlmy.spicystrip.controller.BaseController;
+import xyz.hlmy.spicystrip.model.sys.dto.DoLoginDto;
 import xyz.hlmy.spicystrip.model.sys.dto.InsertUserDto;
+import xyz.hlmy.spicystrip.model.sys.dto.UserListsDto;
 import xyz.hlmy.spicystrip.model.sys.service.SysUserService;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 用户操作
@@ -36,4 +39,31 @@ public class UserController extends BaseController {
         return r;
     }
 
+
+    /**
+     * 登录
+     *
+     * @param dto 参数
+     * @return R
+     */
+    @PostMapping("/login")
+    public R doLogin(@RequestBody DoLoginDto dto, HttpServletRequest request) {
+        log.info("UserController doLogin START");
+        R r = sysUserService.doLogin(dto,request);
+        log.info("ActModelController doLogin END");
+        return r;
+    }
+
+
+    /**
+     * 查询用户列表
+     *
+     * @param dto 参数
+     * @return R
+     */
+    @PostMapping("/list")
+    public R getUserLists(@RequestBody UserListsDto dto) {
+        R userLists = sysUserService.getUserLists(dto);
+        return userLists;
+    }
 }

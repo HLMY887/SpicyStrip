@@ -1,32 +1,43 @@
 package xyz.hlmy.spicystrip.model.sys.service.impl;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.secure.SaSecureUtil;
+import cn.dev33.satoken.session.SaSession;
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import xyz.hlmy.spicystrip.common.R;
 import xyz.hlmy.spicystrip.common.Snowflake;
+import xyz.hlmy.spicystrip.model.sys.entity.SysLogin;
+import xyz.hlmy.spicystrip.model.sys.service.SysLoginService;
+import xyz.hlmy.spicystrip.model.sys.dto.DoLoginDto;
 import xyz.hlmy.spicystrip.model.sys.dto.InsertUserDto;
+import xyz.hlmy.spicystrip.model.sys.dto.UserListsDto;
 import xyz.hlmy.spicystrip.model.sys.entity.SysDept;
 import xyz.hlmy.spicystrip.model.sys.entity.SysUser;
-import xyz.hlmy.spicystrip.model.sys.entity.SysUserDept;
-import xyz.hlmy.spicystrip.model.sys.mapper.SysUserRoleMapper;
-import xyz.hlmy.spicystrip.model.sys.service.SysDeptService;
 import xyz.hlmy.spicystrip.model.sys.service.SysUserDeptService;
 import xyz.hlmy.spicystrip.model.sys.service.SysUserRoleService;
 import xyz.hlmy.spicystrip.model.sys.service.SysUserService;
 import xyz.hlmy.spicystrip.model.sys.mapper.SysUserMapper;
 import org.springframework.stereotype.Service;
+import xyz.hlmy.spicystrip.util.IPUtil;
+import xyz.hlmy.spicystrip.util.OsTypeUtil;
 
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author lipenghui
  * @description 针对表【sys_user(用户表)】的数据库操作Service实现
  * @createDate 2022-10-25 09:51:36
  */
+@Slf4j
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
 
@@ -36,6 +47,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Resource
     private SysUserDeptService sysUserDeptService;
+
+    @Resource
+    private SysLoginService sysLoginService;
 
     /**
      * 新增用户
@@ -53,13 +67,61 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         Snowflake snowflake = new Snowflake();
         long userId = snowflake.nextId();
         //判定创建
-        boolean user = this.saveOrUpdate(new SysUser().setUid(userId).setUser_name(dto.getUsername()).setReal_name(dto.getReal_name()).setPassword(SaSecureUtil.sha256(dto.getPassword())).setSex(dto.getSex()).setPhone(dto.getPhone()).setTel(dto.getTel()).setEmail(dto.getEmail()).setAvatar(dto.getAvatar()).setStatus(dto.getStatus()));
+        boolean user = this.saveOrUpdate(new SysUser().setUid(userId).setUserName(dto.getUsername()).setRealName(dto.getReal_name()).setPassword(SaSecureUtil.sha256(dto.getPassword())).setSex(dto.getSex()).setPhone(dto.getPhone()).setTel(dto.getTel()).setEmail(dto.getEmail()).setAvatar(dto.getAvatar()).setStatus(dto.getStatus()));
         boolean userDept = this.sysUserDeptService.saveOrUpdate(userId, dto.getDept_id());
         boolean userRole = this.sysUserRoleService.saveOrUpdateBatchUserRole(dto.getRole_id(), userId);
         if (user && userDept && userRole) {
             return R.ok();
         }
         return R.err(400, "创建用户失败");
+    }
+
+    /**
+     * 用户登录
+     *
+     * @param dto 参数
+     * @return R
+     */
+    @Override
+    public R doLogin(DoLoginDto dto, HttpServletRequest request) {
+        SysUser sysUser = this.getOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getUserName, dto.getUser_name()).eq(SysUser::getPassword, SaSecureUtil.sha256(dto.getPassword())));
+        if (sysUser != null) {
+            String ip = IPUtil.getIP(request);
+            String osType = OsTypeUtil.getOSType(request);
+            boolean orUpdate = this.sysLoginService.saveOrUpdate(new SysLogin().setUid(sysUser.getUid()).setuIp(ip).setuName(sysUser.getUserName()).setuType(osType));
+            if (orUpdate) {
+                //设置登录
+                StpUtil.login(sysUser.getUid());
+                //保存用户信息到Session
+                StpUtil.getSession(true).set(SaSession.USER, sysUser);
+                //获取角色
+                List<Object> userRoleLists = this.sysUserRoleService.getUserRole(sysUser.getUid());
+                //获取部门
+                List<SysDept> userDeptLists = this.sysUserDeptService.getUserDept(sysUser.getUid());
+                HashMap<String, Object> data = new HashMap<>();
+                data.put("user", sysUser);
+                data.put("role", userRoleLists);
+                data.put("dept", userDeptLists);
+                data.put("token", StpUtil.getTokenInfo());
+                return R.ok(data);
+            }
+            return R.err(400, "用户不存在");
+        }
+        return R.err(400, "用户不存在");
+    }
+
+    /**
+     * 获取用户列表
+     *
+     * @param dto 参数
+     * @return R
+     */
+    @SaCheckRole("admin")
+    @Override
+    public R getUserLists(UserListsDto dto) {
+        Object o = StpUtil.getSession().get(SaSession.USER);
+        log.info(o.toString());
+        return null;
     }
 
 
@@ -70,7 +132,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @return boolean
      */
     private boolean checkSysUsername(String userName) {
-        SysUser one = super.getOne(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getUser_name, userName).last("limit 1"));
+        SysUser one = super.getOne(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getUserName, userName).last("limit 1"));
         return one != null;
     }
 }

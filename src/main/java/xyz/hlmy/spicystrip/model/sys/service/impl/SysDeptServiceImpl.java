@@ -24,7 +24,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      */
     @Override
     public boolean checkSysUsername(Long dept_id) {
-        SysDept one = this.getOne(new LambdaQueryWrapper<SysDept>().eq(SysDept::getDept_id, dept_id));
+        SysDept one = this.getOne(new LambdaQueryWrapper<SysDept>().eq(SysDept::getDeptId, dept_id));
         return one != null;
     }
 

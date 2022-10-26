@@ -2,8 +2,6 @@
 
 ### 主要功能(暂定)
 
-![Spicy Strip](Spicy%20Strip.png)
-
 
  ### 主要技术
 | Version | Supported          |
