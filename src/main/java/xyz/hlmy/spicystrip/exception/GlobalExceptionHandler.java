@@ -1,74 +1,60 @@
 package xyz.hlmy.spicystrip.exception;
 
 import cn.dev33.satoken.exception.NotLoginException;
-
+import cn.dev33.satoken.exception.NotPermissionException;
+import cn.dev33.satoken.exception.NotRoleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import xyz.hlmy.spicystrip.common.Constant;
 import xyz.hlmy.spicystrip.common.R;
 
-import java.util.List;
+import java.util.Objects;
 
-
+/**
+ * 全局异常处理
+ */
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends Exception {
     private static Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    /**
-     * 处理SA_TOKEN 异常
-     *
-     * @param nle
-     * @return
-     */
-    @ExceptionHandler(NotLoginException.class)
-    public R handlerSaTokenException(NotLoginException nle) {
-        log.info(nle.toString());
-        String message = "";
-        if (nle.getType().equals(NotLoginException.NOT_TOKEN)) {
-            message = "请先登录";
-        } else if (nle.getType().equals(NotLoginException.INVALID_TOKEN)) {
-            message = "登录时间已过期,请重新登录";
-        } else if (nle.getType().equals(NotLoginException.TOKEN_TIMEOUT)) {
-            message = "登录时间已过期,请重新登录";
-        } else if (nle.getType().equals(NotLoginException.BE_REPLACED)) {
-            message = "您已被顶下线";
-        } else if (nle.getType().equals(NotLoginException.KICK_OUT)) {
-            message = "您已被踢下线";
-        } else {
-            message = "当前会话未登录";
-        }
-        return R.err(400, message);
+
+    @ExceptionHandler(Exception.class)
+    public R handlerException(Exception e) {
+        log.error("全局异常捕获，异常消息:" + e.getMessage());
+        return R.err("系统异常，请联系管理员~");
     }
 
-
-    /**
-     * 处理POST请求参数校验异常
-     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public R validExceptionHandler(MethodArgumentNotValidException e) {
-        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
-        return R.err(Constant.PARAMETER, fieldErrors.get(0).getDefaultMessage());
+    public R handlerMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        log.error("校验参数异常:" + e.getMessage());
+        return R.err(Objects.requireNonNull(e.getFieldError()).getDefaultMessage());
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public R validExceptionHandler(HttpMessageNotReadableException e) {
-        return R.err(Constant.REQUEST_ERROR_CODE, "请求错误");
+    @ExceptionHandler(NotLoginException.class)
+    public R handlerNotLoginException(NotLoginException e) {
+        log.error("登录失效异常:" + e.getMessage());
+        return R.err(400, "未登录");
+    }
+
+    @ExceptionHandler(NotPermissionException.class)
+    public R handlerNotPermissionException(NotPermissionException e) {
+        log.error("权限不足异常:" + e.getMessage());
+        return R.err(400, "无权访问");
     }
 
     @ExceptionHandler(BusinessException.class)
-    public R validExceptionHandler(BusinessException e) {
-        return R.err(e.getErrorCode());
+    public R handlerBusinessException(BusinessException e) {
+        log.error("业务逻辑异常: " + e.getMessage());
+        return R.err(400, e.getMessage());
     }
 
-    @ExceptionHandler(Exception.class)
-    public R validExceptionHandler(Exception e) {
-        e.printStackTrace();
-        System.out.println(e.getMessage());
-        return R.err(Constant.ERROR_CODE, "系统错误");
+    @ExceptionHandler(NotRoleException.class)
+    public R handlerNotRoleException(NotRoleException e) {
+        log.error("角色未知异常: " + e.getMessage());
+        return R.err(400, "无权访问");
     }
+
+
 }

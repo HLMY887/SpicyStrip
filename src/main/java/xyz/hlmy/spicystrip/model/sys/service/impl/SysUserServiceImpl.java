@@ -1,6 +1,5 @@
 package xyz.hlmy.spicystrip.model.sys.service.impl;
 
-import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
@@ -14,15 +13,12 @@ import xyz.hlmy.spicystrip.common.R;
 import xyz.hlmy.spicystrip.common.Snowflake;
 import xyz.hlmy.spicystrip.model.sys.UserListVo;
 import xyz.hlmy.spicystrip.model.sys.entity.SysLogin;
-import xyz.hlmy.spicystrip.model.sys.service.SysLoginService;
+import xyz.hlmy.spicystrip.model.sys.service.*;
 import xyz.hlmy.spicystrip.model.sys.dto.DoLoginDto;
 import xyz.hlmy.spicystrip.model.sys.dto.InsertUserDto;
 import xyz.hlmy.spicystrip.model.sys.dto.UserListsDto;
 import xyz.hlmy.spicystrip.model.sys.entity.SysDept;
 import xyz.hlmy.spicystrip.model.sys.entity.SysUser;
-import xyz.hlmy.spicystrip.model.sys.service.SysUserDeptService;
-import xyz.hlmy.spicystrip.model.sys.service.SysUserRoleService;
-import xyz.hlmy.spicystrip.model.sys.service.SysUserService;
 import xyz.hlmy.spicystrip.model.sys.mapper.SysUserMapper;
 import org.springframework.stereotype.Service;
 import xyz.hlmy.spicystrip.util.IPUtil;
@@ -56,6 +52,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Resource
     private SysUserMapper sysUserMapper;
+
+    @Resource
+    private SysRoleService sysRoleService;
 
     /**
      * 新增用户
@@ -122,7 +121,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @param dto 参数
      * @return R
      */
-    @SaCheckRole("admin")
     @Override
     public R getUserLists(UserListsDto dto) {
         QueryWrapper<Object> queryWrapper = new QueryWrapper<>();
@@ -133,9 +131,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             queryWrapper.eq("u.real_name", dto.getRealname());
         }
         queryWrapper.eq("u.status", dto.getStatus());
+        //拿到用户信息
         List<UserListVo> userLists = this.sysUserMapper.getUserLists(queryWrapper);
         if (!StrUtil.isSizeEmpty(userLists)) {
-            return R.page(userLists,userLists.size());
+            //遍历用户
+            userLists.forEach(user -> {
+                //拿到用户对应的角色
+                List<Object> userRole = this.sysUserRoleService.getUserRole(user.getuId());
+                user.setRoleName(userRole);
+            });
+            return R.page(userLists, userLists.size());
         }
         return R.err(400, "为查询到用户");
     }

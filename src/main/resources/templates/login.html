@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>登录</title>
+
     <style>
         * {
             margin: 0;
@@ -101,7 +102,7 @@
 <body>
 <div class="loginBox">
     <h2>登录</h2>
-    <form action="">
+<!--    <form  id="form1" method="post">-->
         <div class="item">
             <input type="text" name="username" id="username" required>
             <label for="username">用户名</label>
@@ -110,17 +111,19 @@
             <input type="password" name="password" id="password" required>
             <label for="password">密码</label>
         </div>
-        <button class="btn" onclick="one()">登录</button>
-    </form>
+        <button class="btn"  id="tijiao">登录</button>
+<!--    </form>-->
 </div>
-<script type="text/javascript">
-    function one() {
-        let name = document.getElementById("username").innerText;
-        let pwd = document.getElementById("password").innerText;
-        $.post("/sys/user/login", name, pwd).then(function (response) {
-            console.log(response);
-        })
+<script src="/lib/js/jquery-1.10.2.min.js"></script>
+<script src="/lib/js/jquery.cookie.js"></script>
+<script>
+    let name = document.getElementById("username").innerText;
+    let pwd = document.getElementById("password").innerText;
+    let params={
+        "user_name":name,
+        "password":pwd
     }
+
 </script>
 </body>
 </html>
