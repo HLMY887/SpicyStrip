@@ -16,6 +16,7 @@ import xyz.hlmy.spicystrip.model.actviti.vo.ProcessModelVO;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 
 /**
@@ -164,19 +165,7 @@ public class ActModelController extends BaseController {
         return query;
     }
 
-    /**
-     * 我的待办
-     *
-     * @param dto 返回参数
-     * @return R
-     */
-    @PostMapping("/my/todo/list")
-    public R getMyTodoList(@RequestBody MyTodoDTO dto) {
-        log.info("ActModelController myTodoList START");
-        R myTodoList = actModelService.getMyTodoList(dto);
-        log.info("ActModelController myTodoList END");
-        return myTodoList;
-    }
+
 
     /**
      * 查看部署流程图
@@ -201,4 +190,31 @@ public class ActModelController extends BaseController {
         actModelService.processFlowChartImage(processInstanceId, response);
     }
 
+    /**
+     * 挂起流程
+     *
+     * @param deploymentIds 流程实例Id
+     * @return R
+     */
+    @PostMapping("/suspend/process")
+    public R suspendProcess(@RequestParam("deploymentIds") List<String> deploymentIds) {
+        log.info("ActModelController suspendProcess START");
+        R definitionByIds = actModelService.suspendProcessDefinitionByIds(deploymentIds);
+        log.info("ActModelController suspendProcess END");
+        return definitionByIds;
+    }
+
+    /**
+     * 激活流程实例
+     *
+     * @param deploymentIds 流程实例ID
+     * @return R
+     */
+    @PostMapping("/activation")
+    public R activationProcess(@RequestParam("deploymentIds") List<String> deploymentIds) {
+        log.info("ActModelController activationProcess START");
+        R process = actModelService.activationProcess(deploymentIds);
+        log.info("ActModelController activationProcess END");
+        return process;
+    }
 }

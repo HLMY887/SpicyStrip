@@ -2,6 +2,8 @@ package xyz.hlmy.spicystrip.model.sys.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import xyz.hlmy.spicystrip.common.R;
+import xyz.hlmy.spicystrip.model.sys.dto.DeptDto;
 import xyz.hlmy.spicystrip.model.sys.entity.SysDept;
 import xyz.hlmy.spicystrip.model.sys.service.SysDeptService;
 import xyz.hlmy.spicystrip.model.sys.mapper.SysDeptMapper;
@@ -28,6 +30,16 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         return one != null;
     }
 
+    /**
+     * 获取部门列表
+     *
+     * @param dto  参数
+     * @return R
+     */
+    @Override
+    public R getDeptLists(DeptDto dto) {
+        return null;
+    }
 
 
 }

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import xyz.hlmy.spicystrip.common.R;
 import xyz.hlmy.spicystrip.common.Snowflake;
 import xyz.hlmy.spicystrip.model.sys.UserListVo;
+import xyz.hlmy.spicystrip.model.sys.dto.UpdUserDto;
 import xyz.hlmy.spicystrip.model.sys.entity.SysLogin;
 import xyz.hlmy.spicystrip.model.sys.service.*;
 import xyz.hlmy.spicystrip.model.sys.dto.DoLoginDto;
@@ -143,6 +144,46 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             return R.page(userLists, userLists.size());
         }
         return R.err(400, "为查询到用户");
+    }
+
+    /**
+     * @param uid
+     * @return
+     */
+    @Override
+    public R getOneUser(String uid) {
+        SysUser one = this.getOne(new QueryWrapper<SysUser>().eq("uid", uid));
+        if (one != null) {
+            List<Object> userRole = this.sysUserRoleService.getUserRole(one.getUid());
+            List<SysDept> userDept = this.sysUserDeptService.getUserDept(one.getUid());
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("user", one);
+            map.put("userRole", userRole);
+            map.put("userDept", userDept);
+            return R.ok(map);
+        }
+        return R.err(400, "错误");
+    }
+
+    /**
+     * 修改
+     *
+     * @param dto 参数
+     * @return R
+     */
+    @Override
+    public R updUSer(UpdUserDto dto) {
+        boolean b = this.checkSysUsername(dto.getUsername());
+        if (b) {
+            boolean user = this.saveOrUpdate(new SysUser().setUid(dto.getUid()).setUserName(dto.getUsername()).setRealName(dto.getReal_name()).setPassword(SaSecureUtil.sha256(dto.getPassword())).setSex(dto.getSex()).setPhone(dto.getPhone()).setTel(dto.getTel()).setEmail(dto.getEmail()).setAvatar(dto.getAvatar()).setStatus(dto.getStatus()));
+            boolean userDept = this.sysUserDeptService.saveOrUpdate(dto.getUid(), dto.getDept_id());
+            boolean userRole = this.sysUserRoleService.saveOrUpdateBatchUserRole(dto.getRole_id(), dto.getUid());
+            if (user && userDept && userRole) {
+                return R.ok();
+            }
+            return R.err(400, "修改失败");
+        }
+        return R.err(400, "用户名已存在");
     }
 
 

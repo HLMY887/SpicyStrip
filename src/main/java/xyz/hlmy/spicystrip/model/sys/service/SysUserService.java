@@ -3,6 +3,7 @@ package xyz.hlmy.spicystrip.model.sys.service;
 import xyz.hlmy.spicystrip.common.R;
 import xyz.hlmy.spicystrip.model.sys.dto.DoLoginDto;
 import xyz.hlmy.spicystrip.model.sys.dto.InsertUserDto;
+import xyz.hlmy.spicystrip.model.sys.dto.UpdUserDto;
 import xyz.hlmy.spicystrip.model.sys.dto.UserListsDto;
 import xyz.hlmy.spicystrip.model.sys.entity.SysUser;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -23,4 +24,8 @@ public interface SysUserService extends IService<SysUser> {
 
 
     R getUserLists(UserListsDto dto);
+
+    R getOneUser(String uid);
+
+    R updUSer(UpdUserDto dto);
 }

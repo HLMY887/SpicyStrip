@@ -18,7 +18,7 @@ import xyz.hlmy.spicystrip.model.actviti.vo.MyProListVO;
 import xyz.hlmy.spicystrip.model.actviti.vo.ProcessModelVO;
 
 import javax.servlet.http.HttpServletResponse;
-
+import java.util.List;
 
 
 /**
@@ -56,4 +56,7 @@ public interface ActModelService extends IService<ActModel> {
 
     void processFlowChartImage(String processInstanceId, HttpServletResponse response);
 
+    R suspendProcessDefinitionByIds(List<String> deploymentIds);
+
+    R activationProcess(List<String> deploymentIds);
 }

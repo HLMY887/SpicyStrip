@@ -21,11 +21,6 @@ public class CommonController {
     @Resource
     private SysUserService sysUserService;
 
-    @RequestMapping("/login")
-    public ModelAndView login() {
-        return new ModelAndView("/login");
-    }
-
     @GetMapping("/editor")
     public ModelAndView editor() {
         return new ModelAndView("/modeler");

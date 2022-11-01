@@ -1,8 +1,6 @@
 package xyz.hlmy.spicystrip.model.actviti.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -17,14 +15,11 @@ import xyz.hlmy.spicystrip.model.actviti.dto.LeveDto;
 import xyz.hlmy.spicystrip.model.actviti.dto.TaskDto;
 import xyz.hlmy.spicystrip.model.actviti.entity.ActLeave;
 import xyz.hlmy.spicystrip.model.actviti.mapper.ActLeaveMapper;
-import xyz.hlmy.spicystrip.model.actviti.mapper.ActModelMapper;
 import xyz.hlmy.spicystrip.model.actviti.service.ActLeaveService;
 import org.springframework.stereotype.Service;
-import xyz.hlmy.spicystrip.model.actviti.service.ActProcessService;
 import xyz.hlmy.spicystrip.util.StrUtil;
 
 import javax.annotation.Resource;
-import java.io.Serializable;
 import java.util.HashMap;
 
 
@@ -67,6 +62,9 @@ public class ActLeaveServiceImpl extends ServiceImpl<ActLeaveMapper, ActLeave> i
         variables.put("userID", "李四");
         try {
             ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(dto.getDeploy()).singleResult();
+            if (processDefinition.isSuspended()) {
+                return R.err(400, "流程已挂起，请激活后再使用");
+            }
             String processDefinitionId = processDefinition.getId();
             runtimeService.startProcessInstanceById(processDefinitionId, String.valueOf(actSnowflake.nextId()), variables);
             actLeave.setStatus(Constant.STATE_LEAVE_INAPPROVAL);

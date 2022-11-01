@@ -14,17 +14,14 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.*;
-import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
-import org.activiti.image.ProcessDiagramGenerator;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
@@ -38,13 +35,11 @@ import xyz.hlmy.spicystrip.common.Constant;
 import xyz.hlmy.spicystrip.common.R;
 import xyz.hlmy.spicystrip.common.Snowflake;
 import xyz.hlmy.spicystrip.model.actviti.dto.ModelDTO;
-import xyz.hlmy.spicystrip.model.actviti.dto.MyProListDTO;
 import xyz.hlmy.spicystrip.model.actviti.dto.MyTodoDTO;
 import xyz.hlmy.spicystrip.model.actviti.dto.ProcessQuery;
 import xyz.hlmy.spicystrip.model.actviti.entity.ActLeave;
 import xyz.hlmy.spicystrip.model.actviti.entity.ActModel;
 import xyz.hlmy.spicystrip.model.actviti.entity.ActProcess;
-import xyz.hlmy.spicystrip.model.actviti.ext.CustomProcessDiagramGenerator;
 import xyz.hlmy.spicystrip.model.actviti.mapper.ActLeaveMapper;
 import xyz.hlmy.spicystrip.model.actviti.service.ActModelService;
 import xyz.hlmy.spicystrip.model.actviti.mapper.ActModelMapper;
@@ -54,6 +49,8 @@ import xyz.hlmy.spicystrip.model.actviti.service.ActService;
 import xyz.hlmy.spicystrip.model.actviti.vo.MyProListVO;
 import xyz.hlmy.spicystrip.model.actviti.vo.MyTodoVO;
 import xyz.hlmy.spicystrip.model.actviti.vo.ProcessModelVO;
+import xyz.hlmy.spicystrip.model.sys.entity.SysUser;
+import xyz.hlmy.spicystrip.util.Util;
 import xyz.hlmy.spicystrip.util.StrUtil;
 
 import javax.annotation.Resource;
@@ -115,7 +112,7 @@ public class ActModelServiceImpl extends ServiceImpl<ActModelMapper, ActModel> i
         editorNode.put("resourceId", "canvas");
         ObjectNode stencilSetNode = objectMapper.createObjectNode();
         stencilSetNode.put("namespace", "http://b3mn.org/stencilset/bpmn2.0#");
-        editorNode.put("stencilset", stencilSetNode);
+        editorNode.replace("stencilset", stencilSetNode);
 
         Model model = repositoryService.newModel();
         ObjectNode modelObjectNode = objectMapper.createObjectNode();
@@ -310,12 +307,12 @@ public class ActModelServiceImpl extends ServiceImpl<ActModelMapper, ActModel> i
         }
         //获取到流程ID
         String processDefinitionId = processDefinition.getId();
-        log.info(processDefinitionId);
+
         //设置业务ID
         Snowflake snowflake = new Snowflake();
         long nextId = snowflake.nextId();
-        //TODO 2022.10.21 获取当前用户的名称(先用手动设置)
         HashMap<String, Object> variables = new HashMap<>();
+        SysUser user = Util.getUser();
         try {
             runtimeService.startProcessInstanceById(processDefinitionId, String.valueOf(nextId));
             ActLeave actLeave = new ActLeave();
@@ -367,13 +364,16 @@ public class ActModelServiceImpl extends ServiceImpl<ActModelMapper, ActModel> i
     @Override
     public R getMyTodoList(MyTodoDTO dto) {
         TaskQuery taskQuery = taskService.createTaskQuery();
-        if (cn.hutool.core.util.StrUtil.isNotBlank(dto.getUsername())) {
+        //获取当前用户
+        SysUser user = Util.getUser();
+        dto.setUsername(user.getUserName());
+        if (!StrUtil.isEmpty(dto.getUsername())) {
             taskQuery.taskCandidateOrAssigned(dto.getUsername());
         }
-        if (cn.hutool.core.util.StrUtil.isNotBlank(dto.getTaskName())) {
+        if (!StrUtil.isEmpty(dto.getTaskName())) {
             taskQuery.taskNameLike(StrUtil.jointLike(dto.getTaskName()));
         }
-        if (cn.hutool.core.util.StrUtil.isNotBlank(dto.getProcessName())) {
+        if (!StrUtil.isEmpty(dto.getProcessName())) {
             taskQuery.processDefinitionNameLike(StrUtil.jointLike(dto.getProcessName()));
         }
         ProcessQuery<List<Task>> tq = new ProcessQuery<>();
@@ -454,6 +454,49 @@ public class ActModelServiceImpl extends ServiceImpl<ActModelMapper, ActModel> i
             os.close();
         } catch (Exception e) {
             log.error(e.toString());
+        }
+    }
+
+    /**
+     * 挂起流程
+     *
+     * @param deploymentIds 流程实例ID
+     * @return R
+     */
+    @Override
+    @Transactional
+    public R suspendProcessDefinitionByIds(List<String> deploymentIds) {
+        try {
+            deploymentIds.forEach(deploymentId -> {
+                ProcessDefinition result = repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId).singleResult();
+                if (!result.isSuspended()) {
+                    repositoryService.suspendProcessDefinitionById(result.getId());
+                }
+            });
+            return R.ok();
+        } catch (Exception e) {
+            return R.err(400, "挂起失败");
+        }
+    }
+
+    /**
+     * 激活流程
+     *
+     * @param deploymentIds 流程实例ID
+     * @return R
+     */
+    @Override
+    public R activationProcess(List<String> deploymentIds) {
+        try {
+            deploymentIds.forEach(deploymentId -> {
+                ProcessDefinition result = repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId).singleResult();
+                if (result.isSuspended()) {
+                    repositoryService.activateProcessDefinitionById(result.getId());
+                }
+            });
+            return R.ok();
+        } catch (Exception e) {
+            return R.err(400, "激活失败");
         }
     }
 }
